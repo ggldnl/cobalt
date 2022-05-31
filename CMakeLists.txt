@@ -104,7 +104,7 @@ find_package(catkin REQUIRED COMPONENTS
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES cobalt
-#  CATKIN_DEPENDS roscpp std_msgs
+  CATKIN_DEPENDS roscpp std_msgs
 #  DEPENDS system_lib
 )
 
@@ -115,7 +115,7 @@ catkin_package(
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
 include_directories(
-# include
+  include
   ${catkin_INCLUDE_DIRS}
 )
 
@@ -123,6 +123,12 @@ include_directories(
 # add_library(${PROJECT_NAME}
 #   src/${PROJECT_NAME}/cobalt.cpp
 # )
+
+add_library(robot include/cobalt/robot.cpp include/cobalt/motor.cpp include/cobalt/encoder.cpp include/cobalt/pid.cpp include/cobalt/utils.cpp include/cobalt/geometry.cpp)
+add_library(motor include/cobalt/motor.cpp include/cobalt/encoder.cpp include/cobalt/pid.cpp include/cobalt/utils.cpp)
+add_library(encoder include/cobalt/encoder.cpp)
+add_library(utils include/cobalt/utils.cpp)
+add_library(pid include/cobalt/pid.cpp include/cobalt/utils.cpp)
 
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries
@@ -133,6 +139,41 @@ include_directories(
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
 # add_executable(${PROJECT_NAME}_node src/cobalt_node.cpp)
+
+# check if the device has an ARM processor
+EXECUTE_PROCESS( COMMAND uname -m COMMAND tr -d '\n' OUTPUT_VARIABLE ARCHITECTURE )
+
+# encoder_test
+add_executable(encoder_test hardware_test/encoder_test.cpp)
+if (${ARCHITECTURE} MATCHES "arm")
+	target_link_libraries(encoder_test ${catkin_LIBRARIES} -lwiringPi -lpthread)
+else()
+	target_link_libraries(encoder_test ${catkin_LIBRARIES})
+endif()
+
+# motor_test
+add_executable(motor_test hardware_test/motor_test.cpp)
+if (${ARCHITECTURE} MATCHES "arm")
+	target_link_libraries(motor_test ${catkin_LIBRARIES} -lwiringPi -lpthread)
+else()
+	target_link_libraries(motor_test ${catkin_LIBRARIES})
+endif()
+
+# battery_test
+#add_executable(battery_test hardware_test/battery_test.cpp)
+#if (${ARCHITECTURE} MATCHES "arm")
+#	target_link_libraries(battery_test ${catkin_LIBRARIES} -lwiringPi -lpthread)
+#else()
+#	target_link_libraries(battery_test ${catkin_LIBRARIES})
+#endif()
+
+# ToF_test
+#add_executable(ToF_test hardware_test/ToF_test.cpp)
+#if (${ARCHITECTURE} MATCHES "arm")
+#	target_link_libraries(ToF_test ${catkin_LIBRARIES} -lwiringPi -lpthread)
+#else()
+#	target_link_libraries(ToF_test ${catkin_LIBRARIES})
+#endif()
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -148,6 +189,18 @@ include_directories(
 # target_link_libraries(${PROJECT_NAME}_node
 #   ${catkin_LIBRARIES}
 # )
+
+# main executable
+# add_executable(${PROJECT_NAME}_node src/cobalt_node.cpp)
+add_executable(cobalt_node src/cobalt_node.cpp)
+EXECUTE_PROCESS( COMMAND uname -m COMMAND tr -d '\n' OUTPUT_VARIABLE ARCHITECTURE )
+if (${ARCHITECTURE} MATCHES "arm")
+	# main depends on our robot library and on wiringPi
+	target_link_libraries(cobalt_node robot ${catkin_LIBRARIES} -lwiringPi -lpthread)
+else()
+	# main only depends on our robot library
+	target_link_libraries(cobalt_node robot ${catkin_LIBRARIES})
+endif()
 
 #############
 ## Install ##
@@ -190,6 +243,13 @@ include_directories(
 #   # myfile2
 #   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
 # )
+
+# Install launch files
+# https://docs.ros.org/en/foxy/Tutorials/Launch/Launch-system.html
+install(DIRECTORY
+  launch
+  DESTINATION share/${PROJECT_NAME}/
+)
 
 #############
 ## Testing ##

@@ -23,8 +23,6 @@
 #define IN_2 27
 #define ENABLE 7
 
-float speed = 0.0;
-
 /**
  * @brief Split the string based on the separator c
  *
