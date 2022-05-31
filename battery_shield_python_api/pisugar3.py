@@ -6,6 +6,7 @@ from pisugar_interface import PiSugarInterface
 # I2C devices
 from smbus2 import SMBus
 
+
 class PiSugar3 (PiSugarInterface):
 	'''
 	PiSugar3 implementation
@@ -54,19 +55,6 @@ class PiSugar3 (PiSugarInterface):
 		# array to store current draw data over time (need for avg)
 		self._current_draw = [(0, 0) for i in range(self.HISTORY_LEN)]
 		self._avg_output_current = 0
-
-		# TODO: define the updater thread
-		# TODO: the thread must set two variables: avg_voltage, avg_output_current
-
-		# TODO: launch a thread that updates the arrays each n seconds
-
-
-	def __exit__(self, exc_type, exc_value, traceback):
-		'''
-		Close the stream as we leave
-		'''
-		self._bus.close()
-		# TODO: kill the thread
 
 
 	# All these methods will work over registers and are hence
@@ -181,3 +169,8 @@ if __name__ == '__main__':
 	print('battery voltage [V]:\t\t', v)
 	print('battery percent [%]:\t\t', p)
 	print('battery temperature [C]:\t', t)
+
+	while (True):
+
+		v = pisugar.voltage_avg()
+		

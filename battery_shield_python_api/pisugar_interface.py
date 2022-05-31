@@ -1,6 +1,15 @@
 import abc # Abstract Base Classes to implement formal interfaces
 
-class PiSugarInterface(abc.ABC):
+# threading to constantly get an averaged value for 
+# voltage and current draw
+from threading import Thread
+import time
+
+# datetime to get a timestamp for each measure
+from datetime import datetime
+
+
+class PiSugarInterface(abc.ABC, Thread):
 	"""
 	This interface is used for concrete classes to inherit from.
 	Methods defined here will be inherited by the subclasses.
@@ -35,12 +44,71 @@ class PiSugarInterface(abc.ABC):
 		self.UPDATE_INTERVAL = 60 # update each n(=60) seconds
 
 		# array to store voltage data over time (need for avg)
-		self._voltages = [(0, 0) for i in range(self.HISTORY_LEN)]
-		self._avg_voltage = 0
+		self._voltages = [(0.0, None) for i in range(self.HISTORY_LEN)]
+		self._avg_voltage = 0.0
+		self._avg_percent = 0.0
 
 		# array to store current draw data over time (need for avg)
-		self._current_draw = [(0, 0) for i in range(self.HISTORY_LEN)]
-		self._avg_output_current = 0
+		self._current_draw = [(0.0, None) for i in range(self.HISTORY_LEN)]
+		self._avg_output_current = True
+
+		self.should_run = True
+		self.polling_index = 0.0
+
+		# The array will fill up slowly. Computing the mean we need to
+		# account only for the values that we added
+		self.added_elements = 0.0
+
+
+	def run (self):
+
+		# we won't need locks and atomic blocks because of the GIL 
+		# (Global Interpreter Lock) (?)
+		# It guarantees no two threads are executing Python code at the same time, 
+		# so there can never be simultaneous reads/writes.
+		while self.should_run:
+
+			if self.added_elements < self.HISTORY_LEN:
+				self.added_elements += 1 # max = HISTORY_LEN
+
+			# get voltage
+			v = self.voltage()
+			self._voltages[self.polling_index] = (v, datetime.now())
+
+			# get current
+			i = self.output_current()
+			self._current_draw[self.polling_index] = (i, datetime.now())
+
+			# update mean values
+			self._avg_voltage = 0.0
+			self._avg_output_current = 0.0
+
+			for i in range(self.added_elements):
+				self._avg_voltage += self._voltages[i][0]
+				self._avg_output_current += self._current_draw[i][0]
+
+			self._avg_voltage /= self.added_elements
+			self._avg_output_current /= self.added_elements
+
+			# update average percentage
+			self._avg_percent = 100.0
+			if self._avg_voltage > 0.0:
+				self._avg_percent = self._convert_battery_voltage_to_level(self._avg_voltage, self._battery_curve)
+
+			# sleep
+			time.sleep(self.UPDATE_INTERVAL)
+
+
+	def stop (self):
+		self.should_run = False
+
+
+	def __exit__(self, exc_type, exc_value, traceback):
+		'''
+		Close the stream and kill the thread as we leave
+		'''
+		self._bus.close()
+		self.stop()
 
 
 	def model (self):
@@ -60,7 +128,8 @@ class PiSugarInterface(abc.ABC):
 
 	def voltage (self):
 		'''
-		Returns the voltage
+		Returns the voltage.
+		This is an instantaneous measurement, so it won't be precise
 		'''
 		v = self._read_voltage ()
 		return v / 1000.0
@@ -83,7 +152,8 @@ class PiSugarInterface(abc.ABC):
 
 	def output_current (self):
 		'''
-		Returns the current drawn in Amps
+		Returns the current drawn in Amps.
+		This is an instantaneous measurement, so it won't be precise
 		'''
 		i = self._read_output_current ()
 		return i / 1000.0
@@ -107,7 +177,8 @@ class PiSugarInterface(abc.ABC):
 	# this should be changed based on the board
 	def temperature (self):
 		'''
-		Returns the chip temperature in celsius
+		Returns the chip temperature in celsius.
+		This is an instantaneous measurement, so it won't be precise
 		'''
 		t = self._read_temperature()
 		return t
@@ -133,15 +204,23 @@ class PiSugarInterface(abc.ABC):
 					return level_low + percent * (level_high - level_low)
 		return 0.0
 
+
 	def percent(self):
 		'''
 		Returns the battery percentage for the PiSugar3/PiSugar2 Pro (?)
+		This is an instantaneous measurement, so it won't be precise
 		'''
 		battery_level = 100.0
 		v = self.voltage()
 		if v > 0.0:
 			battery_level = self._convert_battery_voltage_to_level(v, self._battery_curve)
 		return battery_level
+
+
+	def avg_percent (self):
+		'''
+		'''
+		return self._avg_percent
 
 	
 	@abc.abstractmethod
