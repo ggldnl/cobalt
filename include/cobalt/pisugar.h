@@ -16,7 +16,6 @@
 #define PISUGAR_H
 
 class PiSugar {
-
 }
 
 #endif
