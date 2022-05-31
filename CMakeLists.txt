@@ -126,9 +126,10 @@ include_directories(
 
 add_library(robot include/cobalt/robot.cpp include/cobalt/motor.cpp include/cobalt/encoder.cpp include/cobalt/pid.cpp include/cobalt/utils.cpp include/cobalt/geometry.cpp)
 add_library(motor include/cobalt/motor.cpp include/cobalt/encoder.cpp include/cobalt/pid.cpp include/cobalt/utils.cpp)
+add_library(pid include/cobalt/pid.cpp include/cobalt/utils.cpp)
+add_library(pisugar include/cobalt/pisugar3.cpp)
 add_library(encoder include/cobalt/encoder.cpp)
 add_library(utils include/cobalt/utils.cpp)
-add_library(pid include/cobalt/pid.cpp include/cobalt/utils.cpp)
 
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries
