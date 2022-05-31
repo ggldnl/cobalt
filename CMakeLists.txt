@@ -160,12 +160,12 @@ else()
 endif()
 
 # battery_test
-#add_executable(battery_test hardware_test/battery_test.cpp)
-#if (${ARCHITECTURE} MATCHES "arm")
-#	target_link_libraries(battery_test ${catkin_LIBRARIES} -lwiringPi -lpthread)
-#else()
-#	target_link_libraries(battery_test ${catkin_LIBRARIES})
-#endif()
+add_executable(battery_test hardware_test/battery_test.cpp)
+if (${ARCHITECTURE} MATCHES "arm")
+	target_link_libraries(battery_test ${catkin_LIBRARIES} -lwiringPi -lpthread)
+else()
+	target_link_libraries(battery_test ${catkin_LIBRARIES})
+endif()
 
 # ToF_test
 #add_executable(ToF_test hardware_test/ToF_test.cpp)
