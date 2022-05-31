@@ -3,7 +3,9 @@
 ROS node for a two wheeled Unmanned Ground Vehicle based on a Raspberry Pi Zero W.
 
 Link to [PiSugar website](https://www.pisugar.com/).
+
 Link to the [EasyEDA project](https://u.easyeda.com/account/user/projects/index/detail?project=1f5f350c7c974c4f834d326827976b48&folder=all).
+
 Link to [cobalt_hardware repository]() containing the 3d printed frame and the files for the pcb.
 
 ## Prerequisites
