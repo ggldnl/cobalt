@@ -1,6 +1,6 @@
 import abc # Abstract Base Classes to implement formal interfaces
 
-# threading to constantly get an averaged value for 
+# threading to constantly get an averaged value for
 # voltage and current draw
 from threading import Thread
 import time
@@ -8,13 +8,17 @@ import time
 # datetime to get a timestamp for each measure
 from datetime import datetime
 
-
+# this is how things should go (background thread doing updates), 
+# but the result is really disappointing because the updates do 
+# not respect the set times. I think the problem is python 
+# (GIL + slowness of the language) because threads in c++ did not show
+# these problems (despite being the RPi Zero single core)
 class PiSugarInterface(abc.ABC, Thread):
 	"""
 	This interface is used for concrete classes to inherit from.
 	Methods defined here will be inherited by the subclasses.
 	We can define here the standard behavior common between all
-	PiSugar versions and describe in particular each version 
+	PiSugar versions and describe in particular each version
 	(registers etc.) in the subclasses
 	"""
 
@@ -41,7 +45,7 @@ class PiSugarInterface(abc.ABC, Thread):
 
 		# each observation is a tuple (time, observation)
 		self.HISTORY_LEN = 30 # how many voltage/current observations should we keep
-		self.UPDATE_INTERVAL = 60 # update each n(=60) seconds
+		self.UPDATE_INTERVAL = 1 # update each n(=1) seconds
 
 		# array to store voltage data over time (need for avg)
 		self._voltages = [(0.0, None) for i in range(self.HISTORY_LEN)]
@@ -53,11 +57,11 @@ class PiSugarInterface(abc.ABC, Thread):
 		self._avg_output_current = True
 
 		self.should_run = True
-		self.polling_index = 0.0
+		self.polling_index = 0 # index in which to put the measurement (voltage or current)
 
 		# The array will fill up slowly. Computing the mean we need to
 		# account only for the values that we added
-		self.added_elements = 0.0
+		self.added_elements = 0
 
 
 	def run (self):
@@ -78,6 +82,9 @@ class PiSugarInterface(abc.ABC, Thread):
 			# get current
 			i = self.output_current()
 			self._current_draw[self.polling_index] = (i, datetime.now())
+
+			# update polling_index
+			self.polling_index = (self.polling_index + 1) % self.HISTORY_LEN
 
 			# update mean values
 			self._avg_voltage = 0.0

@@ -1,7 +1,7 @@
 from typing import overload
 from pisugar_interface import PiSugarInterface
 
-# smbus2 is (yet another) pure Python implementation 
+# smbus2 is (yet another) pure Python implementation
 # of the python-smbus package used to interface with
 # I2C devices
 from smbus2 import SMBus
@@ -13,7 +13,9 @@ class PiSugar3 (PiSugarInterface):
 	'''
 
 	def __init__ (self):
-		
+
+		super().__init__()
+
 		# I2C info
 		self.I2C_BUS = 1
 		self.I2C_ADDRESS  = 0x57
@@ -56,6 +58,10 @@ class PiSugar3 (PiSugarInterface):
 		self._current_draw = [(0, 0) for i in range(self.HISTORY_LEN)]
 		self._avg_output_current = 0
 
+		# start the thread: we need to start it in the derived class
+		# after initializing the fields
+		self.run()
+
 
 	# All these methods will work over registers and are hence
 	# device specific
@@ -84,10 +90,10 @@ class PiSugar3 (PiSugarInterface):
 		'''
 
 		# As the doc states:
-		# 'The temperature measurement is in the range of -40 
-		# to 85 degrees Celsius. This temperature is only the 
-		# temperature of the chip itself, it does not represent 
-		# the temperature of the Raspberry Pi, nor does it represent 
+		# 'The temperature measurement is in the range of -40
+		# to 85 degrees Celsius. This temperature is only the
+		# temperature of the chip itself, it does not represent
+		# the temperature of the Raspberry Pi, nor does it represent
 		# the temperature of the battery.'
 		# 0 means -40 degrees Celsius
 		t = self._read_temperature()
@@ -109,7 +115,6 @@ class PiSugar3 (PiSugarInterface):
 		ctrl = self._bus.read_byte_data(self.I2C_ADDRESS, self.I2C_CMD_CTR1)
 		return (ctrl & (1 << 6)) != 0
 
-	
 	def toggle_allow_charging (self, enable: bool):
 		'''
 		Enable/Disable charging
@@ -170,7 +175,12 @@ if __name__ == '__main__':
 	print('battery percent [%]:\t\t', p)
 	print('battery temperature [C]:\t', t)
 
-	while (True):
 
-		v = pisugar.voltage_avg()
-		
+	## import time
+	## update_interval = 2
+	# while (True):
+
+		# v = pisugar.voltage_avg()
+		# print("average voltage: ", v)
+		## time.sleep(update_interval)
+
