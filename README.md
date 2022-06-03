@@ -15,6 +15,8 @@ You may need to install [raspicam_node](https://github.com/UbiquityRobotics/rasp
 
 ## Build instructions
 
+### Build on ARM for ARM
+
 Go to your catkin_ws cd ~/catkin_ws/src and download the sources:
 ```
 cd ~/catkin_ws/src
@@ -74,6 +76,8 @@ export ROS_HOSTNAME="${ROS_IP}"
 
 This way you only need to change the master IP on the slave in case you switch
 network. Keep in mind that the `CONNECTION` variable may vary depending on the master machine, read [this](https://www.freedesktop.org/wiki/Software/systemd/PredictableNetworkInterfaceNames/). The same holds for the RPi, but it's unlikely that you will run it with any kind of eth cable, especially since we are dealing with an ugv.
+
+### Build for ARM on another architecture
 
 ## Usage
 
