@@ -1,73 +1,107 @@
-/**
- * @file pisugar.h
- * @author Re-L (danielgigliotti99.dg@gmail.com)
- * @brief 
- * 
- * Interface for all pisugar models. 
- *
- * @version 0.1
- * @date 2022-02-14
- *
- * @copyright Copyright (c) 2022
- *
- */
-
 #ifndef PISUGAR_H
 #define PISUGAR_H
 
-// i2c library
+// for i2c communication
 #include <wiringPiI2C.h>
 
+#include "background_thread.h"
+
 // combine both battery and RTC management
-class PiSugar {
+// inherits start(), stop(), pause(), resume() capabilities
+// from the BackgroundThread class
+class PiSugar : public BackgroundThread {
 
-	// singleton design pattern
-	public:
-
-		static PiSugar& getInstance() {
-			static PiSugar instance;
-			return instance; // instance will be destroyed as soon
-							 // as we return it
-		}
-
-	private:
-
-		PiSugar() {}
-
-		PiSugar(PiSugar const&);		// Not implemented
-		void operator=(PiSugar const&); // Not implemented
-
-	public:
-
-		/**
-		 * Returns the voltage. Instant measure, not accurate
-		 */
-		float get_voltage (void);
-
-		/**
-		 * Returns the current. Instant measure, not accurate
-		 */
-		float get_current (void);
-
-		/**
-		 * Returns the estimated battery percentage. 
-		 * Instant measure, not accurate
-		 */
-		float get_percent (void);
-
-
-		float get_temperature (void);	
+	public:	
 
 		/**
 		 * Returns the average voltage
 		 */
-		float get_avg_voltage (void);
+		float get_voltage (void) {
+			return average_voltage;
+		}
 
-		float get_avg_current (void);
+		/**
+		 * Returns the average current
+		 */
+		float get_current (void) {
+			return average_current;
+		}
 
-		float get_avg_percent (void);
+		/**
+		 * Returns the average battery percentage
+		 */
+		float get_percent (void) {
+			return average_percent;
+		}
 
-	// private:
+		/**
+		 * Returns the average battery temperature
+		 */
+		float get_temperature (void) {
+			return average_temperature;
+		}
+
+	private:
+
+		// how many voltage/current observations should we keep
+		static const int HISTORY_SIZE = 30;
+
+		float voltage_measurements [HISTORY_SIZE];
+		float current_measurements [HISTORY_SIZE];
+		float temperature_measurements [HISTORY_SIZE];
+		float average_voltage = 0.0;
+		float average_current = 0.0;
+		float average_percent = 0.0;
+		float average_temperature = 0.0;
+
+		// index in which to put the measurement (voltage or current)
+		int measurement_index = 0;
+		
+		// the array will fill up slowly and at first only few
+		// elements will be present. Computing the mean we need to
+		// account only for the values that we added
+		int measurement_count = 0;
+
+		void update (void) {
+
+			// update the measurements
+			voltage_measurements[measurement_index] = get_voltage();
+			current_measurements[measurement_index] = get_current();
+			temperature_measurements[measurement_index] = get_temperature();
+
+			// update the index
+			measurement_index = (measurement_index + 1) % HISTORY_SIZE;
+
+			// update number of added elements
+			if (measurement_count < HISTORY_SIZE)
+				measurement_count ++; // max = HISTORY_SIZE
+
+			// update measurements mean
+			average_voltage = 0.0;
+			average_current = 0.0;
+			average_temperature = 0.0;
+			for (int i = 0; i < measurement_count; i++) {
+				// TODO possible overflows
+				average_voltage += voltage_measurements[i];
+				average_current += current_measurements[i];
+				average_temperature += temperature_measurements[i];
+			}
+			average_voltage /= measurement_count;
+			average_current /= measurement_count;
+			average_temperature /= measurement_count;
+
+			// update average percentage
+			average_percent = 100.0;
+			if (average_voltage > 0.0)
+				average_percent = -1.0; // TODO implement percentage computing
+
+		}
+
+		float read_voltage (void);
+
+		float read_current (void);
+
+		float read_temperature (void);
 
 
 	// 	static const int I2C_ADDR; // address
@@ -106,7 +140,7 @@ class PiSugar {
 
 	// 	float _write_byte (int ADDR);
 
-}
+};
 
 #endif
 
