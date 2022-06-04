@@ -1,13 +1,16 @@
-#include "pisugar.h"
+#include "pisugar3.h"
 
-float PiSugar::read_voltage (void) {
-	return 0;
+// for i2c communication
+#include <wiringPiI2C.h>
+
+float PiSugar3::read_voltage (void) {
+	return 0.0;
 }
 
-float PiSugar::read_current (void) {
-	return 0;
+float PiSugar3::read_current (void) {
+	return 0.0;
 }
 
-float PiSugar::read_temperature (void) {
-	return 0;
+float PiSugar3::read_temperature (void) {
+	return 0.0;
 }
