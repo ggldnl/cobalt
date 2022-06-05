@@ -13,6 +13,12 @@
  */
 class PiSugar : public BackgroundThread {
 
+    /* -------------------------------- singleton ------------------------------- */
+    
+    protected:
+    
+        PiSugar (void);
+    
 	/* ------------------- public methods implemented in .cpp ------------------- */
 
 	public:

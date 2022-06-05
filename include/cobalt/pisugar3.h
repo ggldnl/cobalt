@@ -3,11 +3,30 @@
 
 #include "pisugar.h"
 
+/*
+ * singleton: only one instance. This means that we can use a big ass constructor
+ * since it's private. The singleton pattern cannot be inherited (at least not so
+ * easily) so we need to adapt the same code section in each derived class
+ * (I might be wrong, not an expert)
+ */
 class PiSugar3 : public PiSugar {
     
-    public:
     
-		PiSugar3(void);
+    /* -------------------------------- singleton ------------------------------- */
+    
+	public:
+	
+	    static PiSugar3* get_instance ();
+    
+    	PiSugar3(const PiSugar3& obj); // copy constructor
+    	
+    	void operator = (PiSugar3 const& obj) = delete; // assignment operator
+    
+    private:
+    
+        static PiSugar3* instance;
+    
+		PiSugar3();
 		
     
 	/* ----------------------- virtual methods declaration ---------------------- */
@@ -29,6 +48,9 @@ class PiSugar3 : public PiSugar {
 	/* -------------------------- variables declaration ------------------------- */
 
 		int fd; // file descriptor, one for each instance (?)
+
+
+	/* -------------------------------- addresses ------------------------------- */
 
 	protected:
 
@@ -52,5 +74,3 @@ class PiSugar3 : public PiSugar {
 };
 
 #endif
-
-// https://www.cplusplus.com/forum/general/107753/

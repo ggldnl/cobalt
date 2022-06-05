@@ -3,12 +3,27 @@
 // for i2c communication
 #include <wiringPiI2C.h>
 
+/* -------------------------------- singleton ------------------------------- */
 
 PiSugar3::PiSugar3 (void) {
 
 	// it returns a standard file descriptor.
 	fd = wiringPiI2CSetup(I2C_ADDR);
 }
+
+PiSugar3* PiSugar3::instance = 0;
+
+PiSugar3* PiSugar3::get_instance () {
+    if (instance == 0)
+        instance = new PiSugar3();
+    return instance;
+}
+
+PiSugar3::PiSugar3(const PiSugar3& obj) {
+    // do nothing
+}
+
+/* ----------------------- virtual methods definition ----------------------- */
 
 float PiSugar3::read_voltage (void) {
 
@@ -31,9 +46,8 @@ float PiSugar3::read_temperature (void) {
 	return wiringPiI2CReadReg8(fd, I2C_TEMP) - 40.0;
 }
 
-/*
- * constants
- */
+/* -------------------------------- addresses ------------------------------- */
+
 int const PiSugar3::I2C_ADDR = 0x57;
 int const PiSugar3::I2C_CTR1 = 0x02;
 int const PiSugar3::I2C_CTR2 = 0x03;
@@ -42,3 +56,28 @@ int const PiSugar3::I2C_VH = 0x22;
 int const PiSugar3::I2C_VL = 0x23;
 int const PiSugar3::I2C_IH = 0x26;
 int const PiSugar3::I2C_IL = 0x27;
+
+/* ------------------------------ usage example ----------------------------- */
+
+/*
+int main () {
+
+	...
+
+	// get the pointer to the unique instance
+	PiSugar3* pisugar_ptr = PiSugar3::get_instance();
+
+	// variable from pointer
+	PiSugar3 pisugar = *pisugar1_ptr;
+
+	// start the background thread
+	pisugar.start();
+
+	...
+
+	// get average voltage
+	pisugar.get_voltage();
+
+	...
+}
+*/
