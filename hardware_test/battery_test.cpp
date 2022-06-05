@@ -30,7 +30,6 @@ const float battery_curve[BATTERY_CURVE_ENTRIES][2] = {
 };
 
 int fd; // file descriptor 
-int result; // result after sending message
 
 float read_voltage () {
 
