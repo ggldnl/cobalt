@@ -13,7 +13,7 @@ from datetime import datetime
 # not respect the set times. I think the problem is python 
 # (GIL + slowness of the language) because threads in c++ did not show
 # these problems (despite being the RPi Zero single core)
-class PiSugarInterface(abc.ABC, Thread):
+class PiSugarInterface(abc.ABC):
 	"""
 	This interface is used for concrete classes to inherit from.
 	Methods defined here will be inherited by the subclasses.
@@ -23,6 +23,11 @@ class PiSugarInterface(abc.ABC, Thread):
 	"""
 
 	def __init__ (self):
+
+		super().__init__()
+
+		# enable output?
+		self.verbose = False
 
 		# I2C info
 		self.I2C_BUS = None
@@ -41,7 +46,6 @@ class PiSugarInterface(abc.ABC, Thread):
 		self._model = None
 
 		self._battery_curve = None
-
 
 		# each observation is a tuple (time, observation)
 		self.HISTORY_LEN = 30 # how many voltage/current observations should we keep
@@ -63,8 +67,10 @@ class PiSugarInterface(abc.ABC, Thread):
 		# account only for the values that we added
 		self.added_elements = 0
 
+		self.thread = Thread(target = self.update)
 
-	def run (self):
+
+	def update (self):
 
 		# we won't need locks and atomic blocks because of the GIL 
 		# (Global Interpreter Lock) (?)
@@ -102,17 +108,32 @@ class PiSugarInterface(abc.ABC, Thread):
 			if self._avg_voltage > 0.0:
 				self._avg_percent = self._convert_battery_voltage_to_level(self._avg_voltage, self._battery_curve)
 
+			if self.verbose:
+				print("avg_voltage[{:.2f}]\t\tavg_percentage[{:.2f}%]\t\tavg_current_draw[{:.2f}]".format(self._avg_voltage, self._avg_percent, self._avg_output_current))
+
 			# sleep
 			time.sleep(self.UPDATE_INTERVAL)
 
 
+	def start (self):
+		if self.verbose:
+			print("Starting background thread.")
+		self.thread.start()
+
+
 	def stop (self):
+		if self.verbose:
+			print("Stopping background thread. The I2C channel is still opened.")
 		self.should_run = False
+
+
+	def set_update_interval (self, update_interval):
+		self.UPDATE_INTERVAL = update_interval
 
 
 	def __exit__(self, exc_type, exc_value, traceback):
 		'''
-		Close the stream and kill the thread as we leave
+		Close the stream and kill the thread as we leave.
 		'''
 		self._bus.close()
 		self.stop()
@@ -224,8 +245,9 @@ class PiSugarInterface(abc.ABC, Thread):
 		return battery_level
 
 
-	def avg_percent (self):
+	def percent_avg (self):
 		'''
+		Self explanatory
 		'''
 		return self._avg_percent
 

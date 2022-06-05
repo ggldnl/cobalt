@@ -46,23 +46,6 @@ class PiSugar3 (PiSugarInterface):
 		]
 
 
-		# each observation is a tuple (time, observation)
-		self.HISTORY_LEN = 30 # how many voltage/current observations should we keep
-		self.UPDATE_INTERVAL = 60 # update each n(=60) seconds
-
-		# array to store voltage data over time (need for avg)
-		self._voltages = [(0, 0) for i in range(self.HISTORY_LEN)]
-		self._avg_voltage = 0
-
-		# array to store current draw data over time (need for avg)
-		self._current_draw = [(0, 0) for i in range(self.HISTORY_LEN)]
-		self._avg_output_current = 0
-
-		# start the thread: we need to start it in the derived class
-		# after initializing the fields
-		self.run()
-
-
 	# All these methods will work over registers and are hence
 	# device specific
 
@@ -167,20 +150,26 @@ if __name__ == '__main__':
 
 	# why did I structured this code if I know I'm not gonna use it?
 
-	v = pisugar.voltage()
-	p = pisugar.percent()
-	t = pisugar.temperature ()
+	v = pisugar.voltage_avg()
+	p = pisugar.percent_avg()
+
+	# as expected the reading should give 0.0 in both cases
+	print('battery voltage [V]:\t\t', v)
+	print('battery percent [%]:\t\t', p)
+
+	# now run the background thread for a bit and repeat the polling
+	pisugar.start()
+	pisugar.UPDATE_INTERVAL = 1 # set update interval to 1s
+	import time
+	time.sleep(10) # sleep for 10 seconds
+
+	v = pisugar.voltage_avg()
+	p = pisugar.percent_avg()
 
 	print('battery voltage [V]:\t\t', v)
 	print('battery percent [%]:\t\t', p)
-	print('battery temperature [C]:\t', t)
 
+	# stop the thread when finished
+	pisugar.stop()
 
-	## import time
-	## update_interval = 2
-	# while (True):
-
-		# v = pisugar.voltage_avg()
-		# print("average voltage: ", v)
-		## time.sleep(update_interval)
-
+	# this code is crap
