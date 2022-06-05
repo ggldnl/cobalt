@@ -39,7 +39,7 @@ class BackgroundThread {
 		 * this is the only method that a subclass needs to implement,
 		 * the stuff that the background thread will keep doing
 		 */
-        virtual void update (void);
+        virtual void update (void) = 0;
 
     private:
     

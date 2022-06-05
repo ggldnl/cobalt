@@ -2,8 +2,6 @@
 
 void BackgroundThread::start (void) {
     
-    std::cout << "start()" << std::endl;
-    
     running = true;
 
 	std::thread( // lambda 
@@ -35,15 +33,11 @@ void BackgroundThread::start (void) {
 
 void BackgroundThread::stop (void) {
     
-    std::cout << "stop()" << std::endl;
-    
     resume(); // in case the thread is hanging on the condition
 	running = false; // exit the loop
 }
 
 void BackgroundThread::pause (void) {
-    
-    std::cout << "pause()" << std::endl;
     
     // lock around the variable so we can modify it
     std::unique_lock<std::mutex> lock(mutex);
@@ -55,8 +49,6 @@ void BackgroundThread::pause (void) {
 }
 
 void BackgroundThread::resume (void) {
-    
-    std::cout << "resume()" << std::endl;
     
     // lock around the variable so we can modify it
     std::unique_lock<std::mutex> lock(mutex);
@@ -75,6 +67,6 @@ void BackgroundThread::set_interval (int _interval) {
 	interval = _interval;
 }
 
-void BackgroundThread::update (void) {
-	return; // default implementation, do nothing
-}
+//void BackgroundThread::update (void) {
+//	return; // default implementation, do nothing
+//}
