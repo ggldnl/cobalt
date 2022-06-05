@@ -1,5 +1,10 @@
 #include "pisugar.h"
 
+/*
+ * all these methods simply returns a variable, all the computing 
+ * is done in the background loop
+ */
+ 
 float PiSugar::get_voltage (void) {
 	return average_voltage;
 }
@@ -19,9 +24,9 @@ float PiSugar::get_temperature (void) {
 void PiSugar::update (void) {
 
 	// update the measurements
-	voltage_measurements[measurement_index] = get_voltage();
-	current_measurements[measurement_index] = get_current();
-	temperature_measurements[measurement_index] = get_temperature();
+	voltage_measurements[measurement_index] = read_voltage();
+	current_measurements[measurement_index] = read_current();
+	temperature_measurements[measurement_index] = read_temperature();
 
 	// update the index
 	measurement_index = (measurement_index + 1) % HISTORY_SIZE;
@@ -50,5 +55,19 @@ void PiSugar::update (void) {
 		average_percent = -1.0; // TODO implement percentage computing
 
 }
+
+/*
+float PiSugar::read_voltage (void) {
+    return 0.0;
+}
+
+float PiSugar::read_current (void) {
+    return 0.0;
+}
+
+float PiSugar::read_temperature (void) {
+    return 0.0;
+}
+*/
 
 // https://www.cplusplus.com/forum/general/107753/

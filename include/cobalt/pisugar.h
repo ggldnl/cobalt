@@ -13,7 +13,9 @@
  */
 class PiSugar : public BackgroundThread {
 
-	public:	
+	/* ------------------- public methods implemented in .cpp ------------------- */
+
+	public:
 
 		/**
 		 * Returns the average voltage
@@ -34,6 +36,9 @@ class PiSugar : public BackgroundThread {
 		 * Returns the average battery temperature
 		 */
 		float get_temperature (void);
+
+
+	/* ------------------------- compute average values ------------------------- */
 
 	private:
 
@@ -60,7 +65,10 @@ class PiSugar : public BackgroundThread {
 
 		void update (void);
 
-	protected: // subclasses can access it
+
+	/* ---------------- virtual methods implemented by subclasses --------------- */
+
+	protected:
 
 		/*
 		 * each pisugar version has a sligtly different architecture and a slightly
@@ -68,24 +76,27 @@ class PiSugar : public BackgroundThread {
 		 * procedure must be specified in the subclass
 		 */
 
-		virtual float read_voltage (void);
+		virtual float read_voltage (void) = 0;
 
-		virtual float read_current (void);
+		virtual float read_current (void) = 0;
 
-		virtual float read_temperature (void);
+		virtual float read_temperature (void) = 0;
 
-		// const int I2C_ADDR; // address
 
-		// const int I2C_CTR1; // global ctrl register 1
-		// const int I2C_CTR2; // global ctrl register 2
+	/* --------------------- addresses defined by subclasses -------------------- */
 
-		// const int I2C_TEMP; // temperature
+		static int const I2C_ADDR;	// address
 
-		// const int I2C_VH; // voltage high bits
-		// const int I2C_VL; // voltage low bits
+		static int const I2C_CTR1;	// global ctrl register 1
+		static int const I2C_CTR2;	// global ctrl register 2
 
-		// const int I2C_IH; // current high bits
-		// const int I2C_IL; // current low bits
+		static int const I2C_TEMP;	// temperature
+
+		static int const I2C_VH;	// voltage high bits
+		static int const I2C_VL;	// voltage low bits
+
+		static int const I2C_IH;	// current high bits
+		static int const I2C_IL;	// current low bits
 
 		// float battery_curve[][];
 

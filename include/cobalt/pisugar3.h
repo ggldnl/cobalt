@@ -4,6 +4,13 @@
 #include "pisugar.h"
 
 class PiSugar3 : public PiSugar {
+    
+    public:
+    
+		PiSugar3(void);
+		
+    
+	/* ----------------------- virtual methods declaration ---------------------- */
 
 	private:
 
@@ -18,6 +25,29 @@ class PiSugar3 : public PiSugar {
 		float read_current (void);
 
 		float read_temperature (void);
+
+	/* -------------------------- variables declaration ------------------------- */
+
+		int fd; // file descriptor, one for each instance (?)
+
+	protected:
+
+		/*
+		 * addresses, needs to be accessed from subclasses
+		 */
+
+		static int const I2C_ADDR;	// address
+
+		static int const I2C_CTR1;	// global ctrl register 1
+		static int const I2C_CTR2;	// global ctrl register 2
+
+		static int const I2C_TEMP;	// temperature
+
+		static int const I2C_VH;	// voltage high bits
+		static int const I2C_VL;	// voltage low bits
+
+		static int const I2C_IH;	// current high bits
+		static int const I2C_IL;	// current low bits
 
 };
 
