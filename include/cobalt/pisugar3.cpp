@@ -46,6 +46,10 @@ float PiSugar3::read_temperature (void) {
 	return wiringPiI2CReadReg8(fd, I2C_TEMP) - 40.0;
 }
 
+float [][] PiSugar3::get_battery_curve (void) {
+	return battery_curve;
+}
+
 /* -------------------------------- addresses ------------------------------- */
 
 int const PiSugar3::I2C_ADDR = 0x57;
@@ -56,6 +60,22 @@ int const PiSugar3::I2C_VH = 0x22;
 int const PiSugar3::I2C_VL = 0x23;
 int const PiSugar3::I2C_IH = 0x26;
 int const PiSugar3::I2C_IL = 0x27;
+
+/* ------------------------------ battery curve ----------------------------- */
+
+// declaring+initilizing a static 2D array in a single step
+float const PiSugar3::battery_curve[BATTERY_CURVE_ENTRIES][2] = {
+	{4.10, 100.0},
+	{4.05, 95.0},
+	{3.90, 88.0},
+	{3.80, 77.0},
+	{3.70, 65.0},
+	{3.62, 55.0},
+	{3.58, 49.0},
+	{3.49, 25.6},
+	{3.32, 4.5 },
+	{3.1 , 0.0 }
+};
 
 /* ------------------------------ usage example ----------------------------- */
 

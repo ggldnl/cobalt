@@ -3,6 +3,9 @@
 
 #include "background_thread.h"
 
+#include <atomic>
+
+
 /*
  * combine both battery and RTC management
  * inherits start(), stop(), pause(), resume() capabilities
@@ -43,21 +46,41 @@ class PiSugar : public BackgroundThread {
 		 */
 		float get_temperature (void);
 
+	protected:
+
+		/**
+		 * Computes the battery voltage level based on the current voltage on the provided scale
+		 */
+		float convert_battery_voltage_to_level (
+			float& battery_voltage, 
+			float& const battery_curve [BATTERY_CURVE_ENTRIES][2]
+		);
+
 
 	/* ------------------------- compute average values ------------------------- */
 
 	private:
 
+		// how many entries on the voltage curve
+		static const int BATTERY_CURVE_ENTRIES = 10;
+
 		// how many voltage/current observations should we keep
 		static const int HISTORY_SIZE = 30;
 
+		// arrays to store measurements
 		float voltage_measurements [HISTORY_SIZE];
 		float current_measurements [HISTORY_SIZE];
 		float temperature_measurements [HISTORY_SIZE];
-		float average_voltage = 0.0;
-		float average_current = 0.0;
-		float average_percent = 0.0;
-		float average_temperature = 0.0;
+		
+		/*
+		 * needs to be atomic because they have to be modified by the 
+		 * background thread and read by the main thread 
+		 * (actually it is not essential but better to do it (?))
+		 */
+		std::atomic_float average_voltage (0.0);
+		std::atomic_float average_current (0.0);
+		std::atomic_float average_percent (0.0);
+		std::atomic_float average_temperature (0.0);
 
 		// index in which to put the measurement (voltage or current)
 		int measurement_index = 0;
@@ -88,23 +111,7 @@ class PiSugar : public BackgroundThread {
 
 		virtual float read_temperature (void) = 0;
 
-
-	/* --------------------- addresses defined by subclasses -------------------- */
-
-		static int const I2C_ADDR;	// address
-
-		static int const I2C_CTR1;	// global ctrl register 1
-		static int const I2C_CTR2;	// global ctrl register 2
-
-		static int const I2C_TEMP;	// temperature
-
-		static int const I2C_VH;	// voltage high bits
-		static int const I2C_VL;	// voltage low bits
-
-		static int const I2C_IH;	// current high bits
-		static int const I2C_IL;	// current low bits
-
-		// float battery_curve[][];
+		virtual float[][] get_battery_curve (void) = 0;
 
 };
 
