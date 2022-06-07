@@ -3,8 +3,6 @@
 
 #include "background_thread.h"
 
-#include <atomic>
-
 
 /*
  * combine both battery and RTC management
@@ -52,17 +50,19 @@ class PiSugar : public BackgroundThread {
 		 * Computes the battery voltage level based on the current voltage on the provided scale
 		 */
 		float convert_battery_voltage_to_level (
-			float& battery_voltage, 
-			float& const battery_curve [BATTERY_CURVE_ENTRIES][2]
+			float battery_voltage, 
+			float** const battery_curve
 		);
 
 
 	/* ------------------------- compute average values ------------------------- */
 
-	private:
+	protected:
 
 		// how many entries on the voltage curve
 		static const int BATTERY_CURVE_ENTRIES = 10;
+
+	private:
 
 		// how many voltage/current observations should we keep
 		static const int HISTORY_SIZE = 30;
@@ -72,15 +72,11 @@ class PiSugar : public BackgroundThread {
 		float current_measurements [HISTORY_SIZE];
 		float temperature_measurements [HISTORY_SIZE];
 		
-		/*
-		 * needs to be atomic because they have to be modified by the 
-		 * background thread and read by the main thread 
-		 * (actually it is not essential but better to do it (?))
-		 */
-		std::atomic_float average_voltage (0.0);
-		std::atomic_float average_current (0.0);
-		std::atomic_float average_percent (0.0);
-		std::atomic_float average_temperature (0.0);
+		// average values
+		float average_voltage = 0.0;
+		float average_current = 0.0;
+		float average_percent = 0.0;
+		float average_temperature = 0.0;
 
 		// index in which to put the measurement (voltage or current)
 		int measurement_index = 0;
@@ -111,8 +107,7 @@ class PiSugar : public BackgroundThread {
 
 		virtual float read_temperature (void) = 0;
 
-		virtual float[][] get_battery_curve (void) = 0;
-
+		virtual float (*(get_battery_curve)())[2] = 0;
 };
 
 #endif

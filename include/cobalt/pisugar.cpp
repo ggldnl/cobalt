@@ -63,24 +63,30 @@ void PiSugar::update (void) {
 
 // https://www.cplusplus.com/forum/general/107753/
 
+// float PiSugar::convert_battery_voltage_to_level (
+// 	float& battery_voltage,
+// 	float& const battery_curve [BATTERY_CURVE_ENTRIES][2]) {
+
+// 	for (int i = 0; i < BATTERY_CURVE_ENTRIES; i++) {
+// 		float voltage_low 	= battery_curve[i][0];
+// 		float level_low 	= battery_curve[i][1];
+// 		if (battery_voltage > voltage_low) {
+// 			if (i == 0) {
+// 				return level_low;
+// 			} else {
+// 				float voltage_high = battery_curve[i - 1][0];
+// 				float level_high = battery_curve[i - 1][1];
+// 				float percent = (battery_voltage - voltage_low) / (voltage_high - voltage_low);
+// 				return level_low + percent * (level_high - level_low);
+// 			}
+// 		}
+// 	}
+
+// 	return 0.0;
+// }
+
 float PiSugar::convert_battery_voltage_to_level (
-	float& battery_voltage,
-	float& const battery_curve [BATTERY_CURVE_ENTRIES][2]) {
-
-	for (int i = 0; i < BATTERY_CURVE_ENTRIES; i++) {
-		float voltage_low 	= battery_curve[i][0];
-		float level_low 	= battery_curve[i][1];
-		if (battery_voltage > voltage_low) {
-			if (i == 0) {
-				return level_low;
-			} else {
-				float voltage_high = battery_curve[i - 1][0];
-				float level_high = battery_curve[i - 1][1];
-				float percent = (battery_voltage - voltage_low) / (voltage_high - voltage_low);
-				return level_low + percent * (level_high - level_low);
-			}
-		}
-	}
-
-	return 0.0;
+	float battery_voltage, 
+	float** const battery_curve) {
+		return 0.0;
 }

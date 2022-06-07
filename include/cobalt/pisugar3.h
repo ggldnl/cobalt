@@ -45,13 +45,11 @@ class PiSugar3 : public PiSugar {
 
 		float read_temperature (void);
 
-		float [][] get_battery_curve (void);
+		float (*(get_battery_curve)())[2];
 
 	/* -------------------------- variables declaration ------------------------- */
 
 		int fd; // file descriptor, one for each instance (?)
-
-		float const [][] battery_curve;
 
 	/* -------------------------------- addresses ------------------------------- */
 
