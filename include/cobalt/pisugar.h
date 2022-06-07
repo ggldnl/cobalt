@@ -14,11 +14,13 @@
  */
 class PiSugar : public BackgroundThread {
 
+
     /* -------------------------------- singleton ------------------------------- */
     
     protected:
     
         PiSugar (void);
+
     
 	/* ------------------- public methods implemented in .cpp ------------------- */
 
@@ -44,18 +46,21 @@ class PiSugar : public BackgroundThread {
 		 */
 		float get_temperature (void);
 
-	protected:
+
+	/* ----------------------------- utility methods ---------------------------- */
+
+	private:
 
 		/**
 		 * Computes the battery voltage level based on the current voltage on the provided scale
 		 */
 		float convert_battery_voltage_to_level (
 			float battery_voltage, 
-			float** const battery_curve
+			float (*battery_curve)[2]
 		);
 
 
-	/* ------------------------- compute average values ------------------------- */
+	/* -------------------- average values computing methods -------------------- */
 
 	protected:
 

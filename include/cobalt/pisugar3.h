@@ -47,9 +47,11 @@ class PiSugar3 : public PiSugar {
 
 		float (*(get_battery_curve)())[2];
 
+
 	/* -------------------------- variables declaration ------------------------- */
 
 		int fd; // file descriptor, one for each instance (?)
+
 
 	/* -------------------------------- addresses ------------------------------- */
 
