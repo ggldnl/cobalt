@@ -181,3 +181,23 @@ class VL53L0X(object):
 if __name__ == '__main__':
 
     sensor = VL53L0X()
+
+    # loop for 10 seconds
+    import time
+
+    interval_s = 10
+
+    # time.time() returns the current time in seconds
+    t_end = time.time() + interval_s
+
+    while time.time() < t_end:
+
+        try:
+
+            # Grab the range in mm, this function will block until
+            # a reading is returned.
+            distance_in_mm = sensor.measure()
+            print("distance\t{:.2f} [mm]\t{:.2f} [cm]".format(distance_in_mm, distance_in_mm / 10))
+        
+        except:
+            pass
