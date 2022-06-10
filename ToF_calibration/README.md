@@ -1,4 +1,4 @@
-# ToF sensors calibration
+# ToF sensors
 
-Before going on with the installation of the code it is necessary to configure the sensors. Being identical they will have the same address on the I2C bus. It is necessary to connect them to the RPi, start the script and select the new address to be associate them, which will be stored in their EPROM.
-To do so, i'll use [these API](https://github.com/pimoroni/VL53L0X-python/tree/master/python). Dependencies: `smbus2`, `vl53l1x`. At this point `smbus2` should already be installed.
+Before using the sensors it is necessary to configure them. Being identical they will have the same address on the I2C bus. It is necessary to connect and disable (with the `xshut` pin to LOW) all of them, activate them one at a time using the standard address and change it before moving on to the next. Once you change the address, you can't turn the sensor off, otherwise it will reset and discard the changes.
+I used [these python API](https://github.com/pimoroni/VL53L0X-python/tree/master/python) that are apparently a wrapper for an official c library provided by the manufacturer. I'll need to use the [core library](http://www.st.com/content/st_com/en/products/embedded-software/proximity-sensors-software/stsw-img005.html) directly or a c++ wrapper.
