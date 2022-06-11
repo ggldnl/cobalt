@@ -124,6 +124,7 @@ include_directories(
 #   src/${PROJECT_NAME}/cobalt.cpp
 # )
 
+add_library(vl53l0x include/cobalt/vl53l0x/vl53l0x.cpp)
 add_library(robot include/cobalt/robot.cpp include/cobalt/motor.cpp include/cobalt/encoder.cpp include/cobalt/pid.cpp include/cobalt/utils.cpp include/cobalt/geometry.cpp)
 add_library(motor include/cobalt/motor.cpp include/cobalt/encoder.cpp include/cobalt/pid.cpp include/cobalt/utils.cpp)
 add_library(pid include/cobalt/pid.cpp include/cobalt/utils.cpp)
