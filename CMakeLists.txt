@@ -189,12 +189,20 @@ else()
 	target_link_libraries(motor_test ${catkin_LIBRARIES})
 endif()
 
-# battery_test
-add_executable(battery_test hardware_test/raw/battery_test.cpp)
+# pisugar_test raw
+add_executable(battery_test hardware_test/raw/pisugar_test.cpp)
 if (${ARCHITECTURE} MATCHES "arm")
-	target_link_libraries(battery_test ${catkin_LIBRARIES} -lwiringPi -lpthread)
+	target_link_libraries(pisugar_test ${catkin_LIBRARIES} -lwiringPi -lpthread)
 else()
-	target_link_libraries(battery_test ${catkin_LIBRARIES})
+	target_link_libraries(pisugar_test ${catkin_LIBRARIES})
+endif()
+
+# pisugar_test with libraries
+add_executable(battery_test hardware_test/raw/pisugar_test.cpp)
+if (${ARCHITECTURE} MATCHES "arm")
+	target_link_libraries(pisugar_test pisugar ${catkin_LIBRARIES} -lwiringPi -lpthread)
+else()
+	target_link_libraries(pisugar_test pisugar ${catkin_LIBRARIES})
 endif()
 
 # ToF_test
