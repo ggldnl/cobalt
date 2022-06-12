@@ -15,7 +15,7 @@ int main(int argc, char **argv) {
 	PiSugar3* pisugar_ptr = PiSugar3::get_instance();
 
 	// variable from pointer
-	PiSugar3 pisugar = *pisugar1_ptr;
+	PiSugar3 pisugar = *pisugar_ptr;
 
 	// start the background thread
 	pisugar.start();
