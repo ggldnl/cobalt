@@ -125,7 +125,7 @@ include_directories(
 # )
 
 add_library(vl53l0x 
-	include/cobalt/vl53l0x/vl53l0x.cpp
+	include/cobalt/vl53l0x/VL53L0X.cpp
 )
 #add_library(robot
 #	include/cobalt/robot.cpp 
