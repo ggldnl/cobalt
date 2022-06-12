@@ -192,17 +192,17 @@ endif()
 # pisugar_test raw
 add_executable(pisugar_test_raw hardware_test/raw/pisugar_test.cpp)
 if (${ARCHITECTURE} MATCHES "arm")
-	target_link_libraries(pisugar_test ${catkin_LIBRARIES} -lwiringPi -lpthread)
+	target_link_libraries(pisugar_test_raw ${catkin_LIBRARIES} -lwiringPi -lpthread)
 else()
-	target_link_libraries(pisugar_test ${catkin_LIBRARIES})
+	target_link_libraries(pisugar_test_raw ${catkin_LIBRARIES})
 endif()
 
 # pisugar_test with libraries
 add_executable(pisugar_test_lib hardware_test/raw/pisugar_test.cpp)
 if (${ARCHITECTURE} MATCHES "arm")
-	target_link_libraries(pisugar_test pisugar ${catkin_LIBRARIES} -lwiringPi -lpthread)
+	target_link_libraries(pisugar_test_lib pisugar ${catkin_LIBRARIES} -lwiringPi -lpthread)
 else()
-	target_link_libraries(pisugar_test pisugar ${catkin_LIBRARIES})
+	target_link_libraries(pisugar_test_lib pisugar ${catkin_LIBRARIES})
 endif()
 
 # ToF_test
