@@ -127,6 +127,11 @@ include_directories(
 add_library(vl53l0x 
 	include/cobalt/vl53l0x/VL53L0X.cpp
 )
+
+add_library(pisugar
+	include/cobalt/pisugar/pisugar3.cpp
+)
+
 #add_library(robot
 #	include/cobalt/robot.cpp 
 #	include/cobalt/hardware/motor.cpp 
@@ -134,22 +139,23 @@ add_library(vl53l0x
 #	include/cobalt/utils/pid.cpp 
 #	include/cobalt/utils/utils.cpp
 #)
+
 #add_library(motor
 #	include/cobalt/hardware/motor.cpp 
 #	include/cobalt/hardware/encoder.cpp 
 #	include/cobalt/utils/pid.cpp 
 #	include/cobalt/utils/utils.cpp
 #)
+
 #add_library(pid
 #	include/cobalt/utils/pid.cpp 
 #	include/cobalt/utils/utils.cpp
 #)
-#add_library(pisugar
-#	include/cobalt/hardware/pisugar3.cpp
-#)
+
 #add_library(encoder
 #	include/cobalt/hardware/encoder.cpp
 #)
+
 #add_library(utils
 #	include/cobalt/utils/utils.cpp
 #)
