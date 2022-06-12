@@ -124,13 +124,35 @@ include_directories(
 #   src/${PROJECT_NAME}/cobalt.cpp
 # )
 
-add_library(vl53l0x include/cobalt/vl53l0x/vl53l0x.cpp)
-add_library(robot include/cobalt/robot.cpp include/cobalt/motor.cpp include/cobalt/encoder.cpp include/cobalt/pid.cpp include/cobalt/utils.cpp include/cobalt/geometry.cpp)
-add_library(motor include/cobalt/motor.cpp include/cobalt/encoder.cpp include/cobalt/pid.cpp include/cobalt/utils.cpp)
-add_library(pid include/cobalt/pid.cpp include/cobalt/utils.cpp)
-add_library(pisugar include/cobalt/pisugar3.cpp)
-add_library(encoder include/cobalt/encoder.cpp)
-add_library(utils include/cobalt/utils.cpp)
+add_library(vl53l0x 
+	include/cobalt/vl53l0x/vl53l0x.cpp
+)
+#add_library(robot
+#	include/cobalt/robot.cpp 
+#	include/cobalt/hardware/motor.cpp 
+#	include/cobalt/hardware/encoder.cpp 
+#	include/cobalt/utils/pid.cpp 
+#	include/cobalt/utils/utils.cpp
+#)
+#add_library(motor
+#	include/cobalt/hardware/motor.cpp 
+#	include/cobalt/hardware/encoder.cpp 
+#	include/cobalt/utils/pid.cpp 
+#	include/cobalt/utils/utils.cpp
+#)
+#add_library(pid
+#	include/cobalt/utils/pid.cpp 
+#	include/cobalt/utils/utils.cpp
+#)
+#add_library(pisugar
+#	include/cobalt/hardware/pisugar3.cpp
+#)
+#add_library(encoder
+#	include/cobalt/hardware/encoder.cpp
+#)
+#add_library(utils
+#	include/cobalt/utils/utils.cpp
+#)
 
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries
@@ -146,7 +168,7 @@ add_library(utils include/cobalt/utils.cpp)
 EXECUTE_PROCESS( COMMAND uname -m COMMAND tr -d '\n' OUTPUT_VARIABLE ARCHITECTURE )
 
 # encoder_test
-add_executable(encoder_test hardware_test/encoder_test.cpp)
+add_executable(encoder_test hardware_test/raw/encoder_test.cpp)
 if (${ARCHITECTURE} MATCHES "arm")
 	target_link_libraries(encoder_test ${catkin_LIBRARIES} -lwiringPi -lpthread)
 else()
@@ -154,7 +176,7 @@ else()
 endif()
 
 # motor_test
-add_executable(motor_test hardware_test/motor_test.cpp)
+add_executable(motor_test hardware_test/raw/motor_test.cpp)
 if (${ARCHITECTURE} MATCHES "arm")
 	target_link_libraries(motor_test ${catkin_LIBRARIES} -lwiringPi -lpthread)
 else()
@@ -162,7 +184,7 @@ else()
 endif()
 
 # battery_test
-add_executable(battery_test hardware_test/battery_test.cpp)
+add_executable(battery_test hardware_test/raw/battery_test.cpp)
 if (${ARCHITECTURE} MATCHES "arm")
 	target_link_libraries(battery_test ${catkin_LIBRARIES} -lwiringPi -lpthread)
 else()
@@ -170,7 +192,7 @@ else()
 endif()
 
 # ToF_test
-#add_executable(ToF_test hardware_test/ToF_test.cpp)
+#add_executable(ToF_test hardware_test/raw/ToF_test.cpp)
 #if (${ARCHITECTURE} MATCHES "arm")
 #	target_link_libraries(ToF_test ${catkin_LIBRARIES} -lwiringPi -lpthread)
 #else()
@@ -198,10 +220,12 @@ add_executable(cobalt_node src/cobalt_node.cpp)
 EXECUTE_PROCESS( COMMAND uname -m COMMAND tr -d '\n' OUTPUT_VARIABLE ARCHITECTURE )
 if (${ARCHITECTURE} MATCHES "arm")
 	# main depends on our robot library and on wiringPi
-	target_link_libraries(cobalt_node robot ${catkin_LIBRARIES} -lwiringPi -lpthread)
+	#target_link_libraries(cobalt_node robot ${catkin_LIBRARIES} -lwiringPi -lpthread)
+	target_link_libraries(cobalt_node ${catkin_LIBRARIES} -lwiringPi -lpthread)
 else()
 	# main only depends on our robot library
-	target_link_libraries(cobalt_node robot ${catkin_LIBRARIES})
+	#target_link_libraries(cobalt_node robot ${catkin_LIBRARIES})
+	target_link_libraries(cobalt_node ${catkin_LIBRARIES})
 endif()
 
 #############
