@@ -130,6 +130,8 @@ add_library( vl53l0x
 
 add_library( pisugar
 	include/cobalt/pisugar/pisugar3.cpp
+	include/cobalt/background_thread/background_thread.cpp
+	include/cobalt/pisugar/pisugar.cpp
 )
 
 #add_library(robot

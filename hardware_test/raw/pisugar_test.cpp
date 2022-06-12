@@ -99,7 +99,7 @@ int main(int argc, char **argv) {
 	ros::init(argc, argv, "battery_test");
 	ros::NodeHandle n;
 
-	ros::Publisher chatter_pub = n.advertise<std_msgs::String>("battery", 1000);
+	ros::Publisher publisher = n.advertise<std_msgs::String>("battery", 1000);
 
 	// 10 Hz = 100ms
 	// 1000ms -> 1 Hz
@@ -125,7 +125,7 @@ int main(int argc, char **argv) {
 
 		ROS_INFO("%s", msg.data.c_str());
 		
-		chatter_pub.publish(msg);
+		publisher.publish(msg);
 
 		ros::spinOnce();
 
