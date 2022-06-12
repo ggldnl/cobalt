@@ -124,11 +124,11 @@ include_directories(
 #   src/${PROJECT_NAME}/cobalt.cpp
 # )
 
-add_library(vl53l0x 
+add_library( vl53l0x 
 	include/cobalt/vl53l0x/VL53L0X.cpp
 )
 
-add_library(pisugar
+add_library( pisugar
 	include/cobalt/pisugar/pisugar3.cpp
 )
 
@@ -190,7 +190,7 @@ else()
 endif()
 
 # pisugar_test raw
-add_executable(battery_test hardware_test/raw/pisugar_test.cpp)
+add_executable(pisugar_test_raw hardware_test/raw/pisugar_test.cpp)
 if (${ARCHITECTURE} MATCHES "arm")
 	target_link_libraries(pisugar_test ${catkin_LIBRARIES} -lwiringPi -lpthread)
 else()
@@ -198,7 +198,7 @@ else()
 endif()
 
 # pisugar_test with libraries
-add_executable(battery_test hardware_test/raw/pisugar_test.cpp)
+add_executable(pisugar_test_lib hardware_test/raw/pisugar_test.cpp)
 if (${ARCHITECTURE} MATCHES "arm")
 	target_link_libraries(pisugar_test pisugar ${catkin_LIBRARIES} -lwiringPi -lpthread)
 else()
