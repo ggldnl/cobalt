@@ -200,7 +200,7 @@ else()
 endif()
 
 # pisugar_test with libraries
-add_executable(pisugar_test_lib hardware_test/raw/pisugar_test.cpp)
+add_executable(pisugar_test_lib hardware_test/lib/pisugar_test.cpp)
 if (${ARCHITECTURE} MATCHES "arm")
 	target_link_libraries(pisugar_test_lib pisugar ${catkin_LIBRARIES} -lwiringPi -lpthread)
 else()

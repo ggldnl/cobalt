@@ -6,7 +6,7 @@
 #include <sstream>
 
 // my libraries
-#include "../../include/cobalt/pisugar/pisugar.h"
+#include "../../include/cobalt/pisugar/pisugar3.h"
 
 
 int main(int argc, char **argv) {
