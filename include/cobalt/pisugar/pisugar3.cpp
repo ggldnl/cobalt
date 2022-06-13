@@ -3,6 +3,8 @@
 // for i2c communication
 #include <wiringPiI2C.h>
 
+#include "ros/ros.h"
+
 
 /* -------------------------------- singleton ------------------------------- */
 
@@ -29,21 +31,27 @@ PiSugar3::PiSugar3(const PiSugar3& obj) {
 
 float PiSugar3::read_voltage (void) {
 
+	int fd = 3;
+
 	int vh = wiringPiI2CReadReg8(fd, I2C_VH);
 	int vl = wiringPiI2CReadReg8(fd, I2C_VL);
 	int v = (vh << 8) | vl;
-	return v;
+	return v / 1000.0;
 }
 
 float PiSugar3::read_current (void) {
 
+	int fd = 3;
+
 	int ih = wiringPiI2CReadReg8(fd, I2C_IH);
 	int il = wiringPiI2CReadReg8(fd, I2C_IL);
 	int i = (ih << 8) | il;
-	return i;
+	return i / 1000.0;
 }
 
 float PiSugar3::read_temperature (void) {
+
+	int fd = 3;
 
 	return wiringPiI2CReadReg8(fd, I2C_TEMP) - 40.0;
 }

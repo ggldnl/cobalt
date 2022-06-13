@@ -21,6 +21,8 @@ class PiSugar : public BackgroundThread {
     
         PiSugar (void);
 
+		~PiSugar (void);
+
     
 	/* ------------------- public methods implemented in .cpp ------------------- */
 
@@ -70,12 +72,12 @@ class PiSugar : public BackgroundThread {
 	private:
 
 		// how many voltage/current observations should we keep
-		static const int HISTORY_SIZE = 30;
+		static const int HISTORY_SIZE = 50;
 
 		// arrays to store measurements
-		float voltage_measurements [HISTORY_SIZE];
-		float current_measurements [HISTORY_SIZE];
-		float temperature_measurements [HISTORY_SIZE];
+		float voltage_measurements [HISTORY_SIZE] = {0};
+		float current_measurements [HISTORY_SIZE] = {0};
+		float temperature_measurements [HISTORY_SIZE] = {0};
 		
 		// average values
 		float average_voltage = 0.0;

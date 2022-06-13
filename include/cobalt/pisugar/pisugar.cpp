@@ -3,6 +3,8 @@
 
 PiSugar::PiSugar (void) {}
 
+PiSugar::~PiSugar (void) {}
+
 
 /* ----------------------------- public methods ----------------------------- */
 
@@ -49,7 +51,6 @@ void PiSugar::update (void) {
 	average_current = 0.0;
 	average_temperature = 0.0;
 	for (int i = 0; i < measurement_count; i++) {
-		// TODO possible overflows if HISTORY_SIZE is really big
 		average_voltage += voltage_measurements[i];
 		average_current += current_measurements[i];
 		average_temperature += temperature_measurements[i];
