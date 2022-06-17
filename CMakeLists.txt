@@ -128,8 +128,8 @@ add_library( vl53l0x
 	include/cobalt/vl53l0x/VL53L0X.cpp
 )
 
-add_library( pisugar
-	include/cobalt/pisugar/pisugar3.cpp
+add_library( pisugar3
+	include/cobalt/pisugar/pisugar3.h
 	include/cobalt/background_thread/background_thread.cpp
 	include/cobalt/pisugar/pisugar.cpp
 )
@@ -202,9 +202,9 @@ endif()
 # pisugar_test with libraries
 add_executable(pisugar_test_lib hardware_test/lib/pisugar_test.cpp)
 if (${ARCHITECTURE} MATCHES "arm")
-	target_link_libraries(pisugar_test_lib pisugar ${catkin_LIBRARIES} -lwiringPi -lpthread)
+	target_link_libraries(pisugar_test_lib pisugar3 ${catkin_LIBRARIES} -lwiringPi -lpthread)
 else()
-	target_link_libraries(pisugar_test_lib pisugar ${catkin_LIBRARIES})
+	target_link_libraries(pisugar_test_lib pisugar3 ${catkin_LIBRARIES})
 endif()
 
 # ToF_test
