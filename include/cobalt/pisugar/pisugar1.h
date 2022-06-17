@@ -1,9 +1,6 @@
 #ifndef PISUGAR_1_H
 #define PISUGAR_1_H
 
-#include <iostream>
-using namespace std;
-
 #include "pisugar.h"
 
 /**
@@ -13,64 +10,64 @@ class PiSugar1 : public PiSugar {
 	
 	public:
 
-        PiSugar1 () {
-            
-            // it returns a standard file descriptor.
-        	fd = wiringPiI2CSetup(I2C_ADDR);
-        };
+		PiSugar1 () {
+			
+			// it returns a standard file descriptor.
+			fd = wiringPiI2CSetup(I2C_ADDR);
+		};
 
-        ~PiSugar1 () {};
-        
-        
+		~PiSugar1 () {};
+		
+		
 
-    private:
+	private:
 
 		float read_voltage () const override {
-            return 0.0;
+			return 0.0;
 		}
 		
 		float read_current () const override {
-		    return 0.0;
+			return 0.0;
 		}
 		
 		float read_temperature () const override {
-		    return 0.0;
+			return 0.0;
 		}
 		
 		float (*(get_battery_curve)())[2] {
-        	static float battery_curve[BATTERY_CURVE_ENTRIES][2] = {
-        		{4.10, 100.0},
-        		{4.05, 95.0},
-        		{3.90, 88.0},
-        		{3.80, 77.0},
-        		{3.70, 65.0},
-        		{3.62, 55.0},
-        		{3.58, 49.0},
-        		{3.49, 25.6},
-        		{3.32, 4.5 },
-        		{3.1 , 0.0 }
-        	};
-        	return battery_curve;
-        }
+			static float battery_curve[BATTERY_CURVE_ENTRIES][2] = {
+				{4.10, 100.0},
+				{4.05, 95.0},
+				{3.90, 88.0},
+				{3.80, 77.0},
+				{3.70, 65.0},
+				{3.62, 55.0},
+				{3.58, 49.0},
+				{3.49, 25.6},
+				{3.32, 4.5 },
+				{3.1 , 0.0 }
+			};
+			return battery_curve;
+		}
 
-        int fd; // file descriptor
+		int fd; // file descriptor
 
 
 /* -------------------------------- addresses ------------------------------- */
 
-        int const I2C_ADDR = 0x57; // address
-        
-        int const I2C_CTR1 = 0x02; // global ctrl register 1
-        int const I2C_CTR2 = 0x03; // global ctrl register 2
-        
-        int const I2C_TEMP = 0x04; // temperature
-        
-        int const I2C_VH = 0x22; // voltage high bits
-        int const I2C_VL = 0x23; // voltage low bits
-        
-        int const I2C_IH = 0x26; // current high bits
-        int const I2C_IL = 0x27; // current low bits
-    
+		static int const I2C_ADDR = 0x57; // address
+		
+		static int const I2C_CTR1 = 0x02; // global ctrl register 1
+		static int const I2C_CTR2 = 0x03; // global ctrl register 2
+		
+		static int const I2C_TEMP = 0x04; // temperature
+		
+		static int const I2C_VH = 0x22; // voltage high bits
+		static int const I2C_VL = 0x23; // voltage low bits
+		
+		static int const I2C_IH = 0x26; // current high bits
+		static int const I2C_IL = 0x27; // current low bits
+	
 };
 
 /**
