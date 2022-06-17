@@ -207,13 +207,13 @@ else()
 	target_link_libraries(pisugar_test_lib pisugar3 ${catkin_LIBRARIES})
 endif()
 
-# ToF_test
-#add_executable(ToF_test hardware_test/raw/ToF_test.cpp)
-#if (${ARCHITECTURE} MATCHES "arm")
-#	target_link_libraries(ToF_test ${catkin_LIBRARIES} -lwiringPi -lpthread)
-#else()
-#	target_link_libraries(ToF_test ${catkin_LIBRARIES})
-#endif()
+# ToF_test with libraries
+add_executable(ToF_test_single_lib hardware_test/lib/ToF_test_single.cpp)
+if (${ARCHITECTURE} MATCHES "arm")
+	target_link_libraries(ToF_test_single vl53l0x ${catkin_LIBRARIES} -lwiringPi -lpthread)
+else()
+	target_link_libraries(ToF_test_single vl53l0x ${catkin_LIBRARIES})
+endif()
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
