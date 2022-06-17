@@ -1,6 +1,5 @@
 #include "pisugar.h"
 
-
 PiSugar::PiSugar (void) {}
 
 PiSugar::~PiSugar (void) {}
@@ -8,29 +7,30 @@ PiSugar::~PiSugar (void) {}
 
 /* ----------------------------- public methods ----------------------------- */
 
+
 /*
  * all these methods simply returns a variable, all the computing 
  * is done in the background loop
  */
 
-float PiSugar::get_voltage (void) {
-	return average_voltage;
+float PiSugar::get_voltage () const {
+    return average_voltage;
 }
 
-float PiSugar::get_current (void) {
-	return average_current;
+float PiSugar::get_percent () const {
+    return average_percent;
 }
 
-float PiSugar::get_percent (void) {
-	return average_percent;
+float PiSugar::get_current () const {
+    return average_current;
 }
 
-float PiSugar::get_temperature (void) {
-	return average_temperature;
+float PiSugar::get_temperature () const {
+    return average_temperature;
 }
-
 
 /* ----------------------------- utility methods ---------------------------- */
+
 
 void PiSugar::update (void) {
 
