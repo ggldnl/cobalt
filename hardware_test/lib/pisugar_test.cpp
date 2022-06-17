@@ -11,15 +11,16 @@
 
 int main(int argc, char **argv) {
 
-	// get the pointer to the unique instance
-	PiSugar3* pisugar_ptr = PiSugar3::get_instance();
+	// get the pointer to a Creator
+	PiSugarCreator* creator = new PiSugar3Creator();
 
-	// variable from pointer
-	PiSugar3 pisugar = *pisugar_ptr;
+	// get the pointer to a PiSugar3 instance
+	PiSugar* pisugar = creator -> factory();
 
 	// start the background thread
-	pisugar.start();
+	pisugar -> start();
 
+	// ros node setup
 	ros::init(argc, argv, "battery_test");
 	ros::NodeHandle n;
 
@@ -32,9 +33,9 @@ int main(int argc, char **argv) {
 	while (ros::ok()) {
 
 		// get average voltage
-		float v = pisugar.get_voltage();
-		float p = pisugar.get_percent();
-		float t = pisugar.get_temperature();
+		float v = pisugar -> get_voltage();
+		float p = pisugar -> get_percent();
+		float t = pisugar -> get_temperature();
 
 		/**
 		* This is a message object. You stuff it with data, and then publish it.
