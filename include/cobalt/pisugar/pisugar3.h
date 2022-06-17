@@ -65,18 +65,18 @@ class PiSugar3 : public PiSugar {
 
 /* -------------------------------- addresses ------------------------------- */
 
-		int const I2C_ADDR = 0x57; // address
+		static int const I2C_ADDR = 0x57; // address
 		
-		int const I2C_CTR1 = 0x02; // global ctrl register 1
-		int const I2C_CTR2 = 0x03; // global ctrl register 2
+		static int const I2C_CTR1 = 0x02; // global ctrl register 1
+		static int const I2C_CTR2 = 0x03; // global ctrl register 2
 		
-		int const I2C_TEMP = 0x04; // temperature
+		static int const I2C_TEMP = 0x04; // temperature
 		
-		int const I2C_VH = 0x22; // voltage high bits
-		int const I2C_VL = 0x23; // voltage low bits
+		static int const I2C_VH = 0x22; // voltage high bits
+		static int const I2C_VL = 0x23; // voltage low bits
 		
-		int const I2C_IH = 0x26; // current high bits
-		int const I2C_IL = 0x27; // current low bits
+		static int const I2C_IH = 0x26; // current high bits
+		static int const I2C_IL = 0x27; // current low bits
 		
 };
 
@@ -90,3 +90,25 @@ class PiSugar3Creator : public PiSugarCreator {
 };
 
 #endif
+
+/*
+
+// get the pointer to a Creator
+PiSugarCreator* creator = new PiSugar3Creator();
+
+// get the pointer to a PiSugar3 object
+PiSugar* pisugar = creator -> factory();
+
+// start the background thread
+pisugar1 -> start(); 
+
+// do stuff
+float v = pisugar -> get_voltage();
+float c = pisugar -> get_current();
+float p = pisugar -> get_percent();
+float t = pisugar -> get_temperature();
+
+// free the memory
+delete creator;
+
+*/
