@@ -1,6 +1,19 @@
 #include "pid.h"
 #include "utils.h"
 
+/**
+ * @brief clamps the value v between the two provided thresholds
+ * 
+ */
+template <typename T>
+static T clamp(T v, T bottom, T top) {
+	if (v > top)
+		return top;
+	if (v < bottom)
+		return bottom;
+	return v;
+}
+
 float PID::compute (float setpoint, float input) {
 
 	if (mode == MANUAL)
