@@ -1,4 +1,4 @@
 # Hardware test
 
-Files contained in the `raw` folder contain examples on the basic operating logic of sensors/devices. No libraries are used in this case and all the functions that control the hardware are hardcoded inside the very same test file.
-Files contained in the `lib` folder contain examples on how to use the libraries that will be used in the ROS node.
+Files contained in the `raw` folder are examples on the basic operating logic for sensors/devices. No libraries are used in this case and all the functions that control the hardware are hardcoded inside the very same test file.
+Files contained in the `lib` folder are examples on how to use the libraries.

@@ -79,6 +79,8 @@ network. Keep in mind that the `CONNECTION` variable may vary depending on the m
 
 ### Build for ARM on another architecture
 
+TODO
+
 ## Usage
 
 Once you have the node built, you can run it either using the launch file or with `rosrun`.
