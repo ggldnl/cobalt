@@ -15,9 +15,22 @@
 #define MOTOR_H
 
 // my libraries
-#include "../background_thread/background_thread.h"
+#include "../background_thread/background_thread.h" // pid update routine
 #include "encoder.h"
 #include "pid.h"
+
+/**
+ * @brief clamps the value v between the two provided thresholds
+ * 
+ */
+template <typename T>
+static T clamp(T v, T bottom, T top) {
+	if (v > top)
+		return top;
+	if (v < bottom)
+		return bottom;
+	return v;
+}
 
 class Motor: public BackgroundThread {
 
@@ -26,8 +39,7 @@ class Motor: public BackgroundThread {
 		/**
 		* https://www.allaboutcircuits.com/technical-articles/difference-slow-decay-mode-fast-decay-mode-h-bridge-dc-motor-applications/
 		*/
-		static const bool SLOW_DECAY = true;
-		static const bool FAST_DECAY = false;
+		static const enum Decay { SLOW_DECAY, FAST_DECAY};
 
 		/*
 		* directions
@@ -35,8 +47,7 @@ class Motor: public BackgroundThread {
 		* if we want to stop the motor we can use either forward 0 or backward 0
 		* so it's not necessary a steady state
 		*/
-		static const bool FORWARD = true;
-		static const bool BACKWARD = false;
+		static const enum Direction { BACKWARD, FORWARD, STEADY };
 
 		/*
 		* According to the manufacturer:
@@ -51,7 +62,7 @@ class Motor: public BackgroundThread {
 		static const float max_speed;
 
 		/*
-		* Assert threshold is less than 50 at least -> min speed value accepted
+		* Assert threshold is more than 20 at least -> min speed value accepted
 		*/
 		static const int speed_threshold = 20;
 
@@ -88,7 +99,7 @@ class Motor: public BackgroundThread {
 
 			int encoder_count = 0;
 
-			bool direction = FORWARD;
+			Direction direction = Direction.FORWARD;
 		};
 		Motor::Info info;
 
@@ -118,21 +129,18 @@ class Motor: public BackgroundThread {
 		* void forward (int speed) {
 		* 		target_speed = speed;
 		* 		direction = FORWARD;
-		* 		spin_forward(speed);
 		* }
 		* 
 		* void backward (int speed) {
 		* 		target_speed = speed;
 		* 		direction = BACKWARD;
-		* 		spin_backward(speed);
 		* }
 		* 
 		* void stop () {
 		* 		target_speed = 0;
-		*		// set pwm ...
 		* }
 		* 
-		* void update (void) {
+		* void update (void) { // executed e.g. every 0.2 sec
 		* 		current_speed = compute_speed();
 		* 		int new_speed = pid(target_speed, current_speed);
 		* 		if(direction == FORWARD)
@@ -194,39 +202,27 @@ class Motor: public BackgroundThread {
 			this -> _decay_mode = decay_mode;
 		}
 
-		/**
-		* @brief Set the update frequency (ms)
-		* 
+		/*
+		* The class inherits start(), stop(), pause(), resume() and update() 
+		* from the BackgroundThread class. The update() method runs each 1 second
+		* by default but should be increased since it specifies when the motor 
+		* should update the speed (pid)
 		*/
-		inline void set_update_frequency (int update_interval_ms) {
-			this -> update_interval_ms = update_interval_ms;
-		}
-
-		/**
-		* @brief stops the background thread that keeps updating the motors
-		* 
-		*/
-		inline void stop_update_thread (void) {
-			this -> update_thread_running = false;
-		}
 
 	private:
 
 		// Pin mapping
-		int _IN_1, _IN_2;
+		int _IN_1, _IN_2, _ENABLE, _ENCODER;
 		
 		// Internal data
-		bool _decay_mode = SLOW_DECAY;
-		bool _direction = FORWARD;
-
-		bool update_thread_running = false;
-		int update_interval_ms = 2000; // default value
+		Decay _decay_mode = Decay.SLOW_DECAY;
+		Direction _direction = Direction.FORWARD;
 
 		/**
 		* @brief Update routine: tries to correct the current speed to achieve the
 		* target speed set with forward(speed)/backward(speed);
 		*/
-		void update ();
+		void update (void);
 
 		/**
 		* @brief Normalizes the input speed in range (0, 100) to fit the motors need
