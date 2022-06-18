@@ -134,6 +134,12 @@ add_library( pisugar3
 	include/cobalt/pisugar/pisugar.cpp
 )
 
+add_library(motor
+	include/cobalt/hardware/motor.cpp
+	include/cobalt/hardware/encoder.cpp
+	include/cobalt/hardware/pid.cpp
+)
+
 #add_library(robot
 #	include/cobalt/robot.cpp 
 #	include/cobalt/hardware/motor.cpp 
@@ -142,25 +148,6 @@ add_library( pisugar3
 #	include/cobalt/utils/utils.cpp
 #)
 
-#add_library(motor
-#	include/cobalt/hardware/motor.cpp 
-#	include/cobalt/hardware/encoder.cpp 
-#	include/cobalt/utils/pid.cpp 
-#	include/cobalt/utils/utils.cpp
-#)
-
-#add_library(pid
-#	include/cobalt/utils/pid.cpp 
-#	include/cobalt/utils/utils.cpp
-#)
-
-#add_library(encoder
-#	include/cobalt/hardware/encoder.cpp
-#)
-
-#add_library(utils
-#	include/cobalt/utils/utils.cpp
-#)
 
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries
