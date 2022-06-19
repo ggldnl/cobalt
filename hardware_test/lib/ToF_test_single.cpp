@@ -6,7 +6,7 @@
 #include <sstream>
 
 // my libraries
-#include "../../include/cobalt/vl53l0x/VL53L0X.h"
+#include "../../include/cobalt/vl53l0x/VL53L0X.hpp"
 
 
 int main(int argc, char **argv) {
