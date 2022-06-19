@@ -126,6 +126,8 @@ include_directories(
 
 add_library( vl53l0x 
 	include/cobalt/vl53l0x/VL53L0X.cpp
+	include/cobalt/vl53l0x/VL53L0X_defines.hpp
+	include/cobalt/vl53l0x/I2Cdev.cpp
 )
 
 add_library( pisugar3
@@ -134,11 +136,11 @@ add_library( pisugar3
 	include/cobalt/pisugar/pisugar.cpp
 )
 
-add_library(motor
-	include/cobalt/hardware/motor.cpp
-	include/cobalt/hardware/encoder.cpp
-	include/cobalt/hardware/pid.cpp
-)
+#add_library( motor
+#	include/cobalt/hardware/motor.cpp
+#	include/cobalt/hardware/encoder.cpp
+#	include/cobalt/hardware/pid.cpp
+#)
 
 #add_library(robot
 #	include/cobalt/robot.cpp 
@@ -162,7 +164,7 @@ add_library(motor
 # check if the device has an ARM processor
 EXECUTE_PROCESS( COMMAND uname -m COMMAND tr -d '\n' OUTPUT_VARIABLE ARCHITECTURE )
 
-# encoder_test
+# encoder_test raw
 add_executable(encoder_test hardware_test/raw/encoder_test.cpp)
 if (${ARCHITECTURE} MATCHES "arm")
 	target_link_libraries(encoder_test ${catkin_LIBRARIES} -lwiringPi -lpthread)
@@ -170,7 +172,7 @@ else()
 	target_link_libraries(encoder_test ${catkin_LIBRARIES})
 endif()
 
-# motor_test
+# motor_test raw
 add_executable(motor_test hardware_test/raw/motor_test.cpp)
 if (${ARCHITECTURE} MATCHES "arm")
 	target_link_libraries(motor_test ${catkin_LIBRARIES} -lwiringPi -lpthread)
@@ -197,9 +199,9 @@ endif()
 # ToF_test with libraries
 add_executable(ToF_test_single_lib hardware_test/lib/ToF_test_single.cpp)
 if (${ARCHITECTURE} MATCHES "arm")
-	target_link_libraries(ToF_test_single vl53l0x ${catkin_LIBRARIES} -lwiringPi -lpthread)
+	target_link_libraries(ToF_test_single_lib vl53l0x ${catkin_LIBRARIES} -lwiringPi -lpthread)
 else()
-	target_link_libraries(ToF_test_single vl53l0x ${catkin_LIBRARIES})
+	target_link_libraries(ToF_test_single_lib vl53l0x ${catkin_LIBRARIES})
 endif()
 
 ## Rename C++ executable without prefix

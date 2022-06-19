@@ -12,16 +12,11 @@
 
 // pins
 
-/*
- * IN_1_LEFT 28
- * IN_2_LEFT 29
- * IN_1_RIGHT 26
- * IN_2_RIGHT 27
- */
-
-#define IN_1 26
-#define IN_2 27
-#define ENABLE 7
+#define IN_1_LEFT 25
+#define IN_2_LEFT 24
+#define IN_1_RIGHT 23
+#define IN_2_RIGHT 22
+#define ENABLE 29
 
 /**
  * @brief Split the string based on the separator c
@@ -106,8 +101,10 @@ void hardware_setup (void) {
 		digitalWrite(ENABLE, HIGH);
 
 		// set the pins as PWM output
-		softPwmCreate(IN_1, 0, 100);
-		softPwmCreate(IN_2, 0, 100);
+		softPwmCreate(IN_1_LEFT, 0, 100);
+		softPwmCreate(IN_2_LEFT, 0, 100);
+		softPwmCreate(IN_1_RIGHT, 0, 100);
+		softPwmCreate(IN_2_RIGHT, 0, 100);
 
 		ROS_INFO("Motor setup done.");
 
@@ -131,66 +128,196 @@ void hardware_setup (void) {
  * 1		pwm		forward, slow decay
  * pwm		1		backward, slow decay
  */
-void forward(int speed) {
+
+/* ------------------------------- left motor ------------------------------- */
+
+void left_forward(int speed) {
 
 	#ifdef __arm__
 
 		int filtered_speed = filter(speed);
-		softPwmWrite(IN_1, 100);
-		softPwmWrite(IN_2, filtered_speed);
+		softPwmWrite(IN_1_LEFT, 100);
+		softPwmWrite(IN_2_LEFT, filtered_speed);
 
 	#endif
 }
 
-void backward(int speed) {
+void left_backward(int speed) {
 
 	#ifdef __arm__
 
 		int filtered_speed = filter(speed);
-		softPwmWrite(IN_1, filtered_speed);
-		softPwmWrite(IN_2, 100);
+		softPwmWrite(IN_1_LEFT, filtered_speed);
+		softPwmWrite(IN_2_LEFT, 100);
 
 	#endif
+}
+
+void left_stop (void) {
+
+	#ifdef __arm__
+
+		softPwmWrite(IN_1_LEFT, 0);
+		softPwmWrite(IN_2_LEFT, 0);
+
+	#endif
+}
+
+/* ------------------------------- right motor ------------------------------ */
+
+void right_backward(int speed) {
+
+	#ifdef __arm__
+
+		int filtered_speed = filter(speed);
+		softPwmWrite(IN_1_RIGHT, 100);
+		softPwmWrite(IN_2_RIGHT, filtered_speed);
+
+	#endif
+}
+
+void right_forward(int speed) {
+
+	#ifdef __arm__
+
+		int filtered_speed = filter(speed);
+		softPwmWrite(IN_1_RIGHT, filtered_speed);
+		softPwmWrite(IN_2_RIGHT, 100);
+
+	#endif
+}
+
+void right_stop (void) {
+
+	#ifdef __arm__
+
+		softPwmWrite(IN_1_RIGHT, 0);
+		softPwmWrite(IN_2_RIGHT, 0);
+
+	#endif
+}
+
+/* ------------------------------- both motors ------------------------------ */
+
+void forward (int speed) {
+	right_forward(speed);
+	left_forward(speed);
+}
+
+void backward (int speed) {
+	right_backward(speed);
+	left_backward(speed);
 }
 
 void stop (void) {
-
-	#ifdef __arm__
-
-		softPwmWrite(IN_1, 0);
-		softPwmWrite(IN_2, 0);
-
-	#endif
+	left_stop();
+	right_stop();
 }
 
+// sloppy input handling ¯\_( ͡° ͜ʖ ͡°)_/¯ 
 void callBack (const std_msgs::String::ConstPtr& msg) {
 
 	/*
-	 * request format: (<direction> <speed> | "stop")
-	 * e.g. forward 100
-	 *      forward 80
-	 *      stop
-	 *      backward 30
+	 * request format: <motor> (<direction> <speed> | "stop") | "stop"
+	 * e.g. 
+	 * 		stop				 	// stop
+	 *		forward <speed>		 	// <direction> <speed>
+	 * 		backward <speed>	 	// <direction> <speed>
+	 *		left stop			 	// left stop
+	 *		left forward <speed> 	// left <direction> <speed>
+	 * 		left backward <peed> 	// left <direction> <speed>
+	 *		right stop			 	// right stop
+	 *		right forward <speed> 	// right <direction> <speed>
+	 * 		right backward <peed> 	// right <direction> <speed>
+	 *
+	 *		stop
+	 *		<direction> <speed>
+	 *		<motor> stop
+	 *		<motor> <direction> <speed>
 	 */
-	ROS_INFO("Received: %s", msg -> data.c_str());
+	ROS_INFO("Command received: %s", msg -> data.c_str());
 
 	std::vector<std::string> tokens = split(msg -> data.c_str());
-	std::string cmd = tokens[0];
+	std::string token = tokens[0];
 
-	int speed = 0;
-	if (tokens.size() > 1)
-		speed = stoi(tokens[1]);
-	// else the command must be "stop" without a second parameter
+	// command: stop
 
-	if (cmd == "forward") {
-		forward(speed);
-	} else if (cmd == "backward") {
-		backward(speed);
-	} else if (cmd == "stop") {
-		stop();
-	} else {
-		ROS_INFO("Invalid command %s", msg -> data.c_str());
+	if (tokens.size() == 1) {
+		// command is "stop"
+		if (token == "stop")
+			stop();
+		else
+			ROS_INFO("Invalid command %s", msg -> data.c_str());
 	}
+
+	// command: <direction> <speed>
+
+	if (tokens.size() == 2) {
+
+		// command could be "right" (right stop), "left" (left stop),
+		// 		"forward" (forward <speed>), "backward" (backward <speed>)
+
+		if (token == "right") {
+
+			if (tokens[1] == "stop")
+				right_stop();
+			else
+				ROS_INFO("Invalid command %s", msg -> data.c_str());
+
+		} else if (token == "left") {
+
+			if (tokens[1] == "stop")
+				left_stop();
+			else
+				ROS_INFO("Invalid command %s", msg -> data.c_str());
+		
+		} else if (token == "forward" || token == "backward") {
+
+			int speed = stoi(tokens[1]);
+			if (token == "forward")
+				forward(speed);
+			else
+				backward(speed);
+
+		} else {
+			ROS_INFO("Invalid command %s", msg -> data.c_str());
+		}
+	}
+
+	// command: <motor> <direction> <speed>
+
+	if (tokens.size() == 3) {
+		std::string motor = tokens[0];
+		std::string direction = tokens[1];
+		int speed = stoi(tokens[2]);		
+		
+		if (motor == "left") {
+			
+			if (direction == "forward") {
+				left_forward(speed);
+			} else if (direction == "backward") {
+				left_backward(speed);
+			} else {
+				ROS_INFO("Invalid command %s", msg -> data.c_str());
+			}
+
+		} else if (motor == "right") {
+
+			if (direction == "forward") {
+				right_forward(speed);
+			} else if (direction == "backward") {
+				right_backward(speed);
+			} else {
+				ROS_INFO("Invalid command %s", msg -> data.c_str());
+			}
+
+		} else {
+			ROS_INFO("Invalid command %s", msg -> data.c_str());
+		}
+	}
+
+	if (tokens.size() > 3)
+		ROS_INFO("Invalid command %s", msg -> data.c_str());
 }
 
 
