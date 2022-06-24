@@ -1,5 +1,4 @@
 #include "pid.h"
-#include "utils.h"
 
 /**
  * @brief clamps the value v between the two provided thresholds

@@ -11,7 +11,9 @@
 
 int main(int argc, char **argv) {
 
+	//ToF sensor;
 	VL53L0X sensor;
+
 	try {
 
 		// initialize the sensor
@@ -37,12 +39,12 @@ int main(int argc, char **argv) {
 
 	while (ros::ok()) {
 
-		uint16_t distance;
+		int distance;
 		try {
 			
             // read the range. Note that it's a blocking call
 			distance = sensor.readRangeSingleMillimeters();
-		
+
         } catch (const std::exception & error) {
 			std::cerr << "Error geating measurement with reason:" << std::endl << error.what() << std::endl;
 			// you may want to bail out here, depending on your application - error means issues on I2C bus read/write.

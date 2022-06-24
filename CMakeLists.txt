@@ -136,11 +136,12 @@ add_library( pisugar3
 	include/cobalt/pisugar/pisugar.cpp
 )
 
-#add_library( motor
-#	include/cobalt/hardware/motor.cpp
-#	include/cobalt/hardware/encoder.cpp
-#	include/cobalt/hardware/pid.cpp
-#)
+add_library( motor
+	include/cobalt/motor/motor.cpp
+	include/cobalt/background_thread/background_thread.cpp
+	include/cobalt/motor/encoder.cpp
+	include/cobalt/motor/pid.cpp
+)
 
 #add_library(robot
 #	include/cobalt/robot.cpp 
@@ -165,19 +166,27 @@ add_library( pisugar3
 EXECUTE_PROCESS( COMMAND uname -m COMMAND tr -d '\n' OUTPUT_VARIABLE ARCHITECTURE )
 
 # encoder_test raw
-add_executable(encoder_test hardware_test/raw/encoder_test.cpp)
+add_executable(encoder_test_raw hardware_test/raw/encoder_test.cpp)
 if (${ARCHITECTURE} MATCHES "arm")
-	target_link_libraries(encoder_test ${catkin_LIBRARIES} -lwiringPi -lpthread)
+	target_link_libraries(encoder_test_raw ${catkin_LIBRARIES} -lwiringPi -lpthread)
 else()
-	target_link_libraries(encoder_test ${catkin_LIBRARIES})
+	target_link_libraries(encoder_test_raw ${catkin_LIBRARIES})
 endif()
 
 # motor_test raw
-add_executable(motor_test hardware_test/raw/motor_test.cpp)
+add_executable(motor_test_raw hardware_test/raw/motor_test.cpp)
 if (${ARCHITECTURE} MATCHES "arm")
-	target_link_libraries(motor_test ${catkin_LIBRARIES} -lwiringPi -lpthread)
+	target_link_libraries(motor_test_raw ${catkin_LIBRARIES} -lwiringPi -lpthread)
 else()
-	target_link_libraries(motor_test ${catkin_LIBRARIES})
+	target_link_libraries(motor_test_raw ${catkin_LIBRARIES})
+endif()
+
+# motor_test with libraries
+add_executable(motor_test_lib hardware_test/lib/motor_test.cpp)
+if (${ARCHITECTURE} MATCHES "arm")
+	target_link_libraries(motor_test_lib motor ${catkin_LIBRARIES} -lwiringPi -lpthread)
+else()
+	target_link_libraries(motor_test_lib motor ${catkin_LIBRARIES})
 endif()
 
 # pisugar_test raw
@@ -197,12 +206,20 @@ else()
 endif()
 
 # ToF_test with libraries
-add_executable(ToF_test_single_lib hardware_test/lib/ToF_test_single.cpp)
+add_executable(ToF_test_single_lib hardware_test/lib/ToF_test_single_lib.cpp)
 if (${ARCHITECTURE} MATCHES "arm")
 	target_link_libraries(ToF_test_single_lib vl53l0x ${catkin_LIBRARIES} -lwiringPi -lpthread)
 else()
 	target_link_libraries(ToF_test_single_lib vl53l0x ${catkin_LIBRARIES})
 endif()
+
+# ToF_test_multi_lib with libraries
+#add_executable(ToF_test_single_lib hardware_test/lib/ToF_test_single.cpp)
+#if (${ARCHITECTURE} MATCHES "arm")
+#	target_link_libraries(ToF_test_single_lib vl53l0x ${catkin_LIBRARIES} -lwiringPi -lpthread)
+#else()
+#	target_link_libraries(ToF_test_single_lib vl53l0x ${catkin_LIBRARIES})
+#endif()
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the

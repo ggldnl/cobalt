@@ -9,10 +9,6 @@
 const bool Encoder::debounce = true;
 const long Encoder::debouncing_time = 15l;
 
-const float Encoder::ratio = 150;
-
-const float Encoder::disk_slots = 20.0;
-
 uint8_t Encoder::ISRUsed = 0; // allocation table for the globalISRx()
 Encoder* Encoder::myInstance[N_ISR]; // callback instance handle for the ISR
  

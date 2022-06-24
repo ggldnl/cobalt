@@ -21,15 +21,6 @@ class Encoder {
 
 	public:
 
-		// software signal debouncing
-		static const bool debounce;
-		static const long debouncing_time; // ms
-		volatile unsigned long last_micros = 0l;
-
-		static const float disk_slots;
-
-		static const float ratio;
-
 		volatile uint16_t count; // interrupt counter
 
 		Encoder (int pin);
@@ -82,6 +73,14 @@ class Encoder {
 
 	private:
 
+		/* ----------------------- software signal debouncing ----------------------- */
+
+		static const bool debounce;
+		static const long debouncing_time; // ms
+		volatile unsigned long last_micros = 0l;
+
+		/* ---------------------------- ISR bypass stuff ---------------------------- */
+
 		int _pin;	
 		uint8_t myISRId; // ISR Id for myInstance[x] and encoderISRx
 
@@ -108,13 +107,7 @@ class Encoder {
 		}
 
 		void interrupt (void) {
-
 			count++;
-
-			if (count == ratio) {
-				ROS_INFO("Encoder: 1 complete turn!");
-				count = 0;
-			}
 		}
 
 		// declare all the [N_ISR] encoder ISRs
