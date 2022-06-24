@@ -8,9 +8,9 @@
 // my libraries
 #include "../../include/cobalt/vl53l0x/VL53L0X.hpp"
 
-#define ToF_1 1
-#define ToF_2 2
-#define ToF_3 3
+#define ToF_1 20
+#define ToF_2 16
+#define ToF_3 25
 
 
 int main(int argc, char **argv) {
