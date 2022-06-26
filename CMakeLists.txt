@@ -206,20 +206,20 @@ else()
 endif()
 
 # ToF_test with libraries
-add_executable(ToF_test_single_lib hardware_test/lib/ToF_test_single_lib.cpp)
+add_executable(single_ToF_test_lib hardware_test/lib/single_ToF_test.cpp)
 if (${ARCHITECTURE} MATCHES "arm")
-	target_link_libraries(ToF_test_single_lib vl53l0x ${catkin_LIBRARIES} -lwiringPi -lpthread)
+	target_link_libraries(single_ToF_test_lib vl53l0x ${catkin_LIBRARIES} -lwiringPi -lpthread)
 else()
-	target_link_libraries(ToF_test_single_lib vl53l0x ${catkin_LIBRARIES})
+	target_link_libraries(single_ToF_test_lib vl53l0x ${catkin_LIBRARIES})
 endif()
 
 # ToF_test_multi_lib with libraries
-#add_executable(ToF_test_single_lib hardware_test/lib/ToF_test_single.cpp)
-#if (${ARCHITECTURE} MATCHES "arm")
-#	target_link_libraries(ToF_test_single_lib vl53l0x ${catkin_LIBRARIES} -lwiringPi -lpthread)
-#else()
-#	target_link_libraries(ToF_test_single_lib vl53l0x ${catkin_LIBRARIES})
-#endif()
+add_executable(multi_ToF_test_lib hardware_test/lib/multi_ToF_test.cpp)
+if (${ARCHITECTURE} MATCHES "arm")
+	target_link_libraries(multi_ToF_test_lib vl53l0x ${catkin_LIBRARIES} -lwiringPi -lpthread)
+else()
+	target_link_libraries(multi_ToF_test_lib vl53l0x ${catkin_LIBRARIES})
+endif()
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the

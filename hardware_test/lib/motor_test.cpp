@@ -30,6 +30,7 @@ std::vector<std::string> split(const char *str, char c = ' ') {
 	return result;
 }
 
+/* working
 #define IN_1_LEFT 25
 #define IN_2_LEFT 24
 #define ENCODER_LEFT 0
@@ -37,6 +38,16 @@ std::vector<std::string> split(const char *str, char c = ' ') {
 #define IN_1_RIGHT 23
 #define IN_2_RIGHT 22
 #define ENABLE 29
+*/
+
+// final pinout
+#define IN_1_LEFT 29
+#define IN_2_LEFT 28
+#define ENCODER_LEFT 6
+#define ENCODER_RIGHT 4
+#define IN_1_RIGHT 27
+#define IN_2_RIGHT 26
+#define ENABLE 11
 
 Motor left_motor (ENABLE, IN_1_LEFT, IN_2_LEFT, ENCODER_LEFT);
 Motor right_motor (ENABLE, IN_1_RIGHT, IN_2_RIGHT, ENCODER_RIGHT);
