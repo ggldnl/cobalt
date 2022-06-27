@@ -10,7 +10,7 @@ Link to [cobalt_hardware repository]() containing the 3d printed frame and the f
 
 ## Prerequisites
 
-ROS, obviously. To install ROS Melodic on the Raspberry Pi give a look [here](docs/raspberry_setup.md).
+ROS, obviously. To install ROS Melodic on the Raspberry Pi give a look [here](docs/raspberry_setup/README.md).
 You may need to install [raspicam_node](https://github.com/UbiquityRobotics/raspicam_node) but this is optional; if you don't want it, edit the [launch file](launch/cobalt.launch) file and remove the sensitive part.
 
 ## Build instructions
